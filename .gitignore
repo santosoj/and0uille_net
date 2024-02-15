@@ -1,0 +1,5 @@
+.next
+node_modules
+out
+pages/assets/socialNoise.json
+my_website.code-workspace

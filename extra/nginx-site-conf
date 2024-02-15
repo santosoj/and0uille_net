@@ -1,0 +1,55 @@
+server {
+
+	root /var/www/html;
+
+	index index.html;
+    server_name jonassantoso.com www.jonassantoso.com and0uille.net www.and0uille.net;
+
+	location / {
+		try_files $uri $uri/ =404;
+
+		limit_req zone=one burst=20 nodelay;
+		limit_conn addr 25;
+	}
+
+	rewrite ^\/makepis$ https://youtu.be/2yCC9P5yL0s permanent;
+	rewrite ^\/makepis\/$ https://youtu.be/2yCC9P5yL0s permanent;
+
+	rewrite ^\/(misc|studio)$ https://and0uille.net/$1.html permanent;
+	rewrite ^\/(misc|studio)\/$ https://and0uille.net/$1.html permanent;
+
+	rewrite ^\/(\w+)\/([\w\-_]+)$ https://and0uille.net/$1/$2.html permanent;
+	rewrite ^\/(\w+)\/([\w\-_]+)\/$ https://and0uille.net/$1/$2.html permanent;
+
+  listen [::]:443 ssl ipv6only=on;
+  listen 443 ssl;
+  ssl_certificate /etc/letsencrypt/live/jonassantoso.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/jonassantoso.com/privkey.pem;
+  include /etc/letsencrypt/options-ssl-nginx.conf;
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+  disable_symlinks off;
+}
+
+server {
+	if ($host = www.jonassantoso.com) {
+		return 301 https://$host$request_uri;
+	}
+
+	if ($host = jonassantoso.com) {
+		return 301 https://$host$request_uri;
+	}
+
+	if ($host = www.and0uille.net) {
+		return 301 https://$host$request_uri;
+	}
+
+	if ($host = and0uille.net) {
+		return 301 https://$host$request_uri;
+	}
+
+	listen 80 ;
+	listen [::]:80 ;
+	server_name jonassantoso.com www.jonassantoso.com and0uille.net www.and0uille.net;
+	return 404;
+}

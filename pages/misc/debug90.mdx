@@ -1,0 +1,192 @@
+---
+title: Reverse Engineering DOS Software as if It Were 1990
+date: 2023-11-19
+description: This is about running SoftICE, a popular DOS and Windows debugger, in an emulated MS-DOS environment. And about overcoming a limitation of Bochs, the IA-32 (x86) PC emulator.
+tag: retrocracking, reverse engineering
+author: Jonas Santoso
+image: https://jonassantoso.com/debug90_og.jpg
+---
+
+## Quick Start
+
+<div style={{position:'relative',paddingBottom:'56.25%',height:0,overflow:'hidden'}}>
+    <iframe style={{position:'absolute',top:0,left:0,width:'97%',height:'97%'}} src="https://www.youtube-nocookie.com/embed/_KemTF5Yfkg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
+The video above shows a speed run of what's being done in the [How to Build and Install](#how-to-build-and-install) section. **TL;DR:** This is about running SoftICE, a popular DOS and Windows debugger, in an emulated MS-DOS environment. And about overcoming a limitation of [Bochs](https://bochs.sourceforge.io/), the IA-32 (x86) PC emulator.
+
+All of the following assumes a Linux host system. I don't know if and how it would work in macOS, let alone Windows.
+
+## Emulating SoftICE
+
+NuMega started making SoftICE, which became the most widely used tool for debugging DOS, and later Windows software, in 1987. The last version that was released exclusively for DOS is SoftICE 2.80 from 1997. For someone who wishes to use live debugging sessions in an effort to reverse engineer old software today, there is a number of options:
+
+- [DOSBox-X](https://dosbox-x.com/), a fork of DOSBox, features a debugger that bears some resemblance to SoftICE.
+- [IDA](https://hex-rays.com/ida-free/), whilst primarily a disassembler, has a debugger mode too, and there's [dsbxida](https://github.com/lab313ru/dsbxida) which interfaces IDA with DOSBox-X in order to facilitate debugging DOS software.
+- Custom tooling may be built using the [Unicorn](https://www.unicorn-engine.org/) CPU emulator framework. See [UniDOS](https://github.com/aquynh/unidos) for a (yet limited) Unicorn-based DOS emulator.
+
+However, when the intention is not solely to attain a reverse engineering objective, but also to (re-)live the experience of using period tooling, there's nothing like SoftICE for DOS. Where period hardware is not available, we'll be looking at running it in an emulator, and that's where things get a little bit hairy.
+
+SoftICE doesn't work in DOSBox-X. It does work in Bochs which, unlike DOSBox, is based on full emulation of an x86 CPU. Setting up Bochs is a little more involved though, and that aside, there's another problem.
+
+Say we're done installing MS-DOS and SoftICE in a Bochs environment. Pressing `Ctrl+d` brings up SoftICE, and all is good and well *until* we try doing that while running something that's using a VGA graphics mode―a game? Execution is paused, and SoftICE is actually in the foreground, but we don't see it, because text mode is not being restored properly. The Bochs window just shrinks to the height of the UI.
+
+The solution, in actual hardware terms, would be to connect a second monitor to a secondary graphics adapter providing output from an [MC6845](https://en.wikipedia.org/wiki/Motorola_6845) display controller, i.e. an MDA/Hercules card. By issuing `ALTSCR ON` in SoftICE, the debugger's display could then be switched to the secondary monitor.
+
+Unfortunately Bochs doesn't emulate either MDA or a secondary display. Emulating MDA text mode isn't hard though, and ultimately that's what I ended up doing. I found a discussion about adding MDA emulation to Bochs in an [old thread](https://sourceforge.net/p/bochs/discussion/39593/thread/5a1bab61/) on SourceForge. There wasn't a complete implementation anywhere, so I created a Bochs fork with the necessary changes:
+
+https://github.com/santosoj/bochs-dual-monitor
+
+Implementation details can be found in the repo readme. The most important thing to note is probably that the MDA text screen isn't displayed in Bochs itself. It's written to a named pipe as UTF-8 code points, along with ANSI escape sequences for rendering the MC6845's character attributes. The named pipe would then be polled by an external program which dumps the text screen on a terminal. (A sample program doing that was [added to the repo](https://github.com/santosoj/bochs-dual-monitor/blob/master/mda_viewer/__main__.py).)
+
+This screenshot shows Bochs running a game while SoftICE is displayed in a terminal window:
+
+![Bochs running a game while SoftICE is displayed in a terminal window](/screenshot-bochs-dual-monitor.jpg)
+
+## How to Build and Install
+
+### Build Bochs
+
+Clone my [Bochs fork](https://github.com/santosoj/bochs-dual-monitor) and compile it with CPU level 3 in order to target 386. (More on compiling Bochs [here](https://bochs.sourceforge.io/doc/docbook/user/compiling.html).) E.g.
+
+```shell
+$ ./configure --with-sdl2 --enable-cpu-level=3
+$ make
+```
+
+Use `bximage` (part of the Bochs build) to create a harddisk image. The defaults (`hd` / `flat` / `512`) and a size of 30mb will be fine. I'm calling it `hdd.img`.
+
+We need a `.bochsrc` file, which we initialize by starting Bochs and picking `4. Save options to...`. Then we edit it and make these changes (YMMV):
+
+```
+romimage: file="/usr/local/share/bochs/BIOS-bochs-legacy", address=0x00000000, options=fastboot
+floppya: 1_44=dos622_d1.img, status=inserted
+ata0-master: type=disk, mode=flat, path=hdd.img
+#port_e9_hack_all_rings: enabled=0
+```
+
+I had to comment `port_e9_hack_all_rings` because otherwise Bochs would throw an error. `dos622_d1.img` is the first of the MS-DOS 6.22 install disks. You can find these in the [*Downloads*](#downloads) section below.
+
+### Install DOS
+
+One little annoyance observed in other versions of Bochs―it doesn't seem to be occurring in the version the fork is based on―is that Bochs goes straight into the debugger after picking `6. Begin simulation`, requiring you to enter `c <newline>` to continue execution. This can be mitigated by creating a file (named `bochs_init` here) containing `c` and a newline, and passing this file as an argument to Bochs's `-rc` command line option. Also, the startup menu can be skipped by passing `-q`, so the following should make for a quick Bochs startup:
+
+```shell
+$ bochs -q -rc bochs_init
+```
+
+Another annoyance is that Bochs will segfault on starting when a harddisk image lock file is left over from an unclean exit. So when there's a dangling `hdd.img.lock`, delete it before starting Bochs.
+
+Start Bochs and proceed with the MS-DOS installation. When prompted to insert another disk, click `CONFIG` in the Bochs UI, and change the image file for `Floppy disk 0`. Once installation is finished, change the `boot` option in `.bochsrc` from `floppy` to `disk`. When you start Bochs again, it should boot straight into DOS.
+
+### Install a CD-ROM Driver
+
+Next, use `bximage` again to create a floppy image (options: `fd` / `1.44M`). I'm naming it `floppy.img`. In Bochs, insert this disk (`CONFIG` / `1. Floppy disk 0`) and format it by entering `format a:` in DOS. We may as well change the `floppya` option in `.bochsrc` so this disk image is used by default. Once formatted, we mount this floppy image on our host system and copy `oakcdrom.sys`, the Oak CD-ROM driver (also found in the [*Downloads*](#downloads) section):
+
+```shell
+$ sudo mount floppy.img /mnt/tmp
+$ sudo cp oakcdrom.sys /mnt/tmp
+$ sudo umount /mnt/tmp
+```
+
+Install the driver in DOS.
+
+```
+C:\> copy a:\oakcdrom.sys c:\dos
+C:\> edit config.sys
+```
+
+Add this line to `CONFIG.SYS`:
+
+```
+DEVICEHIGH=C:\DOS\OAKCDROM.SYS /D:MSCD001
+```
+
+And this line to `AUTOEXEC.BAT`:
+
+```
+LH C:\DOS\MSCDEX.EXE /D:MSCD001
+```
+
+### Install SoftICE
+
+Now that we can use CD images, let's create one on our host system. Assuming the SoftICE 2.80 files (those found in *S-ICE280.ZIP* inside *sice280_and_extras.zip* from the [*Downloads*](#downloads) section) are in a directory called `sice`, this command creates an ISO image from it:
+
+```shell
+$ mkisofs -o cdrom.iso -V CDROM sice
+```
+
+Change the `ata1-master` option in `.bochsrc` to insert the CD:
+
+```
+ata1-master: type=cdrom, path=cdrom.iso, status=inserted
+```
+
+After booting into DOS again, we can proceed to install SoftICE.
+
+```
+C:\> mkdir sice
+C:\> xcopy /e/s d: c:\sice
+```
+
+Add `C:\SICE` to the `PATH` environment variable in `AUTOEXEC.BAT`. Note that, unlike Bash, DOS uses the semicolon as path separator.
+
+```
+SET PATH=%PATH%;C:\SICE
+```
+
+In `CONFIG.SYS`, load SoftICE before any other driver:
+
+```
+DEVICE=C:\SICE\S_ICE.EXE
+```
+
+That's it. After rebooting, you can bring up SoftICE by pressing `Ctrl+d`.
+
+![Bochs running SoftICE](/screenshot-bochs-softice.png)
+
+### Displaying SoftICE on the MDA Adapter
+
+One step is left in order to be able to debug games and such. The forked Bochs's MDA emulation is enabled when Bochs finds an environment variable named `MDA_PIPE` containing the path to a named pipe. Create the pipe on the host system:
+
+```shell
+$ mkfifo /tmp/mda_pipe
+```
+
+Note that, once MDA is enabled, execution is blocked unless there's a program running that consumes the pipe. So let's start that, the program being the [mda_viewer](https://github.com/santosoj/bochs-dual-monitor/blob/master/mda_viewer/__main__.py) example from the repo.
+
+```shell
+$ cd ~/bochs-dual-monitor/mda_viewer/
+$ MDA_PIPE=/tmp/mda_pipe python .
+```
+
+Start Bochs, also specifying `MDA_PIPE`:
+
+```shell
+$ MDA_PIPE=/tmp/mda_pipe ~/bochs-dual-monitor/bochs/bochs -q
+```
+
+You can verify that MDA is enabled by looking for this line in Bochs's console output:
+
+```
+[MDA] Using named pipe "/tmp/mda_pipe".
+```
+
+Run a game, or something that uses a VGA graphics mode. Press `Ctrl+d`. The graphics display will disappear. But confident that SoftICE is now in the foreground (and with the Bochs window still focused), enter the following SoftICE command.
+
+```
+altscr on
+```
+
+The graphics display comes back, and the terminal window where `mda_viewer` is running now shows SoftICE. It may take a little getting used to not to try typing into the terminal window. It's still the Bochs window that needs to be focused when entering SoftICE commands. But with this setup, we can reverse engineer DOS software as if it were 1990.
+
+### Downloads
+
+De facto abandonware, as none of this is more recent than from 1997.
+
+[MS-DOS 6.22](https://storage.googleapis.com/20kbps-static/00_MISC/jscom/dos622.tar.bz2)  
+[SoftICE 2.80 and extras](https://storage.googleapis.com/20kbps-static/00_MISC/jscom/sice280_and_extras.zip)  
+[OAKCDROM.SYS](https://storage.googleapis.com/20kbps-static/00_MISC/jscom/oakcdrom.sys.bz2)
+
+<pre>[ ::.. AND0UiLLE 2023 ..:: ]
+A 𝘛𝘩𝘦 𝘏𝘢𝘳𝘥𝘭𝘪𝘯𝘦𝘳 série.</pre>

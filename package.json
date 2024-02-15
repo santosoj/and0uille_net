@@ -1,0 +1,37 @@
+{
+  "name": "verderben",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf out .next; npx next build",
+    "pizza": "git checkout pizza; mv next.config.mjs next.config.live.mjs; mv next.config.pizza.mjs next.config.mjs; (npx next build && cp -r out/* /var/www/html/pizzam0de); mv next.config.mjs next.config.pizza.mjs; mv next.config.live.mjs next.config.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@iconify/react": "^4.1.0",
+    "classnames": "^2.3.2",
+    "next": "^13.3.0",
+    "nextra": "^2.12.3",
+    "nextra-theme-blog": "^2.12.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@storybook-extras/variants": "^0.0.68",
+    "@storybook/addon-essentials": "^7.3.2",
+    "@storybook/addon-interactions": "^7.3.2",
+    "@storybook/addon-links": "^7.3.2",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.3.2",
+    "@storybook/nextjs": "^7.3.2",
+    "@storybook/react": "^7.3.2",
+    "@storybook/testing-library": "^0.2.0",
+    "storybook": "^7.3.2",
+    "storybook-addon-variants": "^0.2.0"
+  }
+}

@@ -20,10 +20,10 @@ export default {
   footer: (
     <small style={{ display: 'block', marginTop: '8rem' }}>
       <abbr
-        title="This site and all its content are licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+        title="This site and all its content are licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License."
         style={{ cursor: 'help' }}
       >
-        CC BY-NC 4.0
+        CC BY-NC-ND 4.0
       </abbr>{' '}
       {new Date().getFullYear()} © Jonas Santoso.
       <style jsx>{`

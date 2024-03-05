@@ -43,7 +43,7 @@ export default {
   head({meta, title}) {
     return <>
       <meta property="og:title" content={meta.title || "and0uille.net"} />
-      <meta property="og:description" content={meta.description || "Andouille ‘Jonas’ Santoso, digital media artist and software entomologist. Woke as fxxx and unapologetic. he/him/they/them"} />
+      <meta property="og:description" content={meta.description || "Andouille ‘Jonas’ Santoso, digital media artist and software entomologist. Woke as fxxx and unapologetic. they/she/it/he"} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://and0uille.net" />
       <meta property="og:image" content="https://jonassantoso.com/jscomassets/jonassantoso_com_og.jpg" />

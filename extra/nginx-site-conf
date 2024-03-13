@@ -15,8 +15,8 @@ server {
 	rewrite ^\/makepis$ https://youtu.be/2yCC9P5yL0s permanent;
 	rewrite ^\/makepis\/$ https://youtu.be/2yCC9P5yL0s permanent;
 
-	rewrite ^\/(misc|studio|andthecure)$ https://and0uille.net/$1.html permanent;
-	rewrite ^\/(misc|studio|andthecure)\/$ https://and0uille.net/$1.html permanent;
+    rewrite ^\/(misc|studio|andthecure)$ https://and0uille.net/$1.html permanent;
+    rewrite ^\/(misc|studio|andthecure)\/$ https://and0uille.net/$1.html permanent;
 
 	rewrite ^\/(\w+)\/([\w\-_]+)$ https://and0uille.net/$1/$2.html permanent;
 	rewrite ^\/(\w+)\/([\w\-_]+)\/$ https://and0uille.net/$1/$2.html permanent;

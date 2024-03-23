@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Code | And0uille</title>
+
+    <meta property="og:title" content="Code | And0uille" />
+    <meta property="og:description" content="Andouille ‘Jonas’ Santoso, digital media artist and software entomologist, has coded for a living, but finds coding for fun just much more fun." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://and0uille.net/code.html" />
+    <meta property="og:image" content="https://and0uille.net/and0uille_net_og.jpg" />
+    <meta property="og:image:width" content="1080" />
+    <meta property="og:image:height" content="608" />
+    <meta property="og:image" content="https://and0uille.net/and0uille_net_og__sq.jpg" />
+    <meta property="og:image:width" content="1080" />
+    <meta property="og:image:height" content="1080" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#373737">
+    <meta name="msapplication-TileColor" content="#373737">
+    <meta name="theme-color" content="#373737">
+
+    <script defer data-domain="and0uille.net" src="https://plausible.io/js/script.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <ul class="navigation">
+        <li><a href="/">Intro</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="campaigns.html">Campaigns</a></li>
+        <li><a href="writing.html">Writing</a></li>
+        <li><a href="netaudio.html">Netaudio</a></li>
+        <li><a href="#" class="current-location">Code</a></li>
+      </ul>
+      <h1 class="page-title">And0uille / Code</h1>
+    </header>
+    <main class="main-container">
+      <section class="text-body">
+        <section>
+          <p>
+  Andouille has coded for a living and has been employed as a software engineer at one of Australia's major online retail businesses (three‑and‑a‑half years) and the Canva Pty Ltd graphics software business (nine months), from which they parted unamicably.
+          </p>
+          <p>
+  Nevertheless, Andouille still enjoys coding, occasionally and within reason, when it's something they choose to do without practical concerns. While oftentimes it would be exploratory, and without yielding anything to showcase, sometimes there is something to showcase.
+          </p>
+          <p>
+  Apart from the curated projects below, my <a target="_blank" href="https://github.com/santosoj/">GitHub</a> has a few public repositories.
+          </p>
+        </section>
+        <hr/>
+        <section>
+          <h3>bochs-dual-monitor</h3>
+          <span>[<a target="_blank" href="https://github.com/santosoj/bochs-dual-monitor">Click here to view</a>]</span>
+          <p>
+Sometimes, technology that is thirty years old or older becomes interesting for various reasons. With the computing power at anyone's disposal today, this technology can often be replicated virtually, as is the case with <i>Bochs</i> emulating old personal computers running <i>MS‑DOS</i>.
+          </p>
+          <p>
+I've created a fork of Bochs, and added a feature I wanted to have that was missing. When debugging old software that runs in a VGA graphics mode using a period debugger such as <a target="_blank" href="https://en.wikipedia.org/wiki/SoftICE">SoftICE</a>, two monitors are required, so one of them can display SoftICE in an MDA text mode. This isn't supported by standard Bochs, so I added MDA text mode emulation which emits a text screen simultaneously to the VGA display.
+          </p>
+          <p>
+There's a <a target="_blank" href="_KemTF5Yfkg">YouTube video</a> of setting up my Bochs fork and starting a debugging session using SoftICE too.
+          </p>
+        </section>
+        <hr/>
+        <section>
+          <h3>20kbps_pyramid</h3>
+          <span>[<a target="_blank" href="https://github.com/klubderkluebe/20kbps_pyramid">Click here to view</a>]</span>
+          <p>
+When the 20kbps netlabel was handed over to me, it was a rather disorganized pile of content rendered using PHP with a lot of duplication. Basically, each release had its own PHP script, which was the same for all releases, save for the release‑specific data.
+          </p>
+          <p>
+I found this to be unmaintainable, and because my focus with 20kbps was and is preservation, I rewrote the entire netlabel and based it on the <a target="_blank" href="https://trypyramid.com/">Pyramid</a> framework. So now there is a proper database containing all the release data, release pages are rendered using Jinja2 templates, there's an admin interface for my convenience, and best of all, the netlabel still looks and feels exactly the same to the visitor.
+          </p>
+          <p>
+There is a <a target="_blank" href="https://youtu.be/r76XHKjNMYI">YouTube video</a> of me publishing a new release using the admin interface with ease.
+          </p>
+        </section>
+        <hr/>
+        <section>
+          <h3>token-swap-using-uniswapv2router02</h3>
+          <span>[<a target="_blank" href="https://github.com/santosoj/token-swap-using-uniswapv2router02">Click here to view</a>]</span>
+          <p>
+This was an understanding‑by‑rebuilding effort in order to know the workings of cryptocurrency exchanges. In essence this is an extremely stripped‑down version of a decentralized crypto exchange which realizes token swaps using Uniswap's router.
+          </p>
+          <p>
+The web interface was deployed to the <a target="_blank" href="https://docs.ipfs.tech/concepts/what-is-ipfs/">InterPlanetary File System</a> (IPFS) through Cloudflare's gateway and is still alive and accessible for as long as the <a target="_blank" href="https://myopicmanoeuvre.cyou/">domain</a> is routable. The app enforces that a local node is used though, for we shouldn't inadvertently run something on mainnet that's capable of executing actual token swaps.
+          </p>
+        </section>
+        <hr/>
+        <section>
+          <h3>pisplay</h3>
+          <span>[<a target="_blank" href="https://github.com/klubderkluebe/pisplay">Click here to view</a>]</span>
+          <p>
+On a demoscene tangent, this repo is a port of my replay routine to C, and targeting an Emscripten/WASM environment, so the music could be played in the browser. The backstory is that in 2003, I wrote a tracker music program targeting the OPL2 chip (an «AdLib tracker») in pure QuickBASIC, «pure» here meaning that no external libraries were used.
+          </p>
+          <p>
+Obviously, I was the only one ever to «seriously» use this. But use it I did, the result of which is preserved in this <a target="_blank" href="https://youtu.be/2yCC9P5yL0s">YouTube video</a> of a web‑musicdisk featuring my <i>Beni Tracker</i> tunes. To my surprise, some people working on the AdPlug library <a target="_blank" href="https://adplug.github.io/library/entry/BeniTracker.html"> picked up on it</a> and integrated support for my format into their library.
+          </p>
+        </section>
+        <hr/>
+        <section>
+          <h3>❤🍵 pecuniary loving kindness. 🍵❤</h3>
+          <p>
+  send all your money to me through [<a target="_blank" href="https://ko-fi.com/and0uille">ko-fi</a>]. or…
+          </p>
+          <ul>
+            <li>ETH: <span class="blockchain-wallet-address">    ec1cc94104f0af601d15c6d851ddec931218164f</span></li>
+            <li>BTC: <span class="blockchain-wallet-address">    1q6l9l3p5ucthczd497ntqv00zyhwrtkurgu6klh</span></li>
+          </ul>
+        </section>
+      </section>
+    </main>
+    <footer>
+      <p>
+
+        <small>«and0uille.net» is © 2024 Jonas Santoso and published under Creative Commons licence BY-NC-ND 4.0 International.</small>
+      </p>
+      <p>
+        <small>The only static site generator <i>I</i> need is in my mind.</small>
+      </p>
+    </footer>
+  </body>
+</html>

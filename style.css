@@ -1,0 +1,35 @@
+.main-container {
+}
+
+.navigation {
+    font-size: 0.9em;
+    line-height: 1.555em;
+}
+
+.current-location {
+    pointer-events: none;
+    filter: brightness(1.5) saturate(0.25);
+}
+
+.blockchain-wallet-address {
+    font-family: monospace;
+}
+
+.hyperemphasize {
+    font-style: normal;
+    font-weight: bold;
+    filter: drop-shadow(3px 2px #e737e7);
+}
+
+.inline-monospace {
+    display: inline;
+    font-family: monospace;
+}
+
+footer {
+    margin-bottom: 25vh;
+}
+
+ul.nobullet {
+    list-style-type: none;
+}

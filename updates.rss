@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+  <title>And0uille</title>
+  <link>https://and0uille.net</link>
+  <description>Andouille's updates</description>
+  <language>en</language>
+
+  <image>
+    <url>https://and0uille.net/feed-icon.png</url>
+    <description>Andouille's favicon</description>
+    <link>htts://and0uille.net</link>
+  </image>
+
+  <item>
+    <title>Open Letter to Canva Pty Ltd</title>
+    <link>https://and0uille.net/misc/altman_is_canva.html</link>
+    <description>Andouille held a position as Software Engineer at Canva Pty Ltd for the duration of nine months. The fact that this letter was made available to the public internet actually led to Andouille's being terminated.
+
+When asked why I am doing this, my answer is actually quite simple. There are two reasons driving this.
+
+- Sam Altman holds too much power while being of questionable integrity, which is evidenced by Altman's own public statements. When Canva Pty Ltd collaborates with Altman on a large‑scale Artificial Intelligence project, Canva's own integrity is affected, and I do not feel comfortable contributing to the business any more. I also feel strongly that this is something the public should be aware of.
+
+- I do not appreciate being subject to «work gamification» without my consent, especially when this involves being exposed to tasks which are characteristic of a «bullshit job».
+
+My thanks go out to DAIR and Prof Emily Bender for their efforts raising awareness of issues with AI which people who are «trigger‑happy» about artificial intelligence like to gloss over. 
+    </description>
+    <pubDate>Fri, 22 Mar 2024 15:20:00 +1100</pubDate>
+    <guid>https://and0uille.net/misc/altman_is_canva.html</guid>
+  </item>
+
+</channel>
+</rss>
